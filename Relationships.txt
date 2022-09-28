@@ -1,0 +1,5 @@
+1:1 Relationships - In my Client table, I have a unique constraint on my phone and email entries.
+1:Many Relationships - For this one, in my Clients table, this applies to my city, state, and postal code entries. They are 
+not unique and they can apply to many different clients.
+Many:Many Relationships - This one starts with my Clients table that connects to my Pet Information table with the client_id 
+connecting to the owner_id. That table then connects to the Pet Type, Vaccines, and Operations tables via the pet_id.
