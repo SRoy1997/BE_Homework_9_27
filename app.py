@@ -1,13 +1,13 @@
 # from ast import Or
 # import json
 # import psycopg2
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from flask_marshmallow import Marshmallow
 
 from db import *
 from models.clients import Clients
 from models.pet_information import PetInformation
-import endpoints
+# from models.pet_information import PetInformation
 # from models.user import users_schema, Users, user_schema
 # from models.org import Organizations, organizations_schema, organization_schema
 
@@ -26,45 +26,63 @@ def create_all():
     db.create_all()
     print("All done!")
 
+def populate_object(obj, data_dictionary):
+  fields = data_dictionary.keys()
+  for field in fields:
+    if getattr(obj, field): 
+      setattr(obj, field, data_dictionary[field])
 
-    # print("Querying for Sarah Roy...")
-    # client_data = db.session.query(Clients).filter(Clients.email == 'sarah@devpipeline.com').first()
-    # if client_data == None:
-    #   print("Sarah Roy not found! Creating Sarah's account...")
-    #   first_name = 'Sarah'
-    #   last_name = 'Roy'
-    #   email = 'sarah@devpipeline.com'
-    #   phone = '3852014194'
-    #   street_address = '1263 N Locust Ln'
-    #   city = 'Provo'
-    #   state = 'Utah'
-    #   postal_code = '84604'
-    #   active = True
+@app.route("/client/add", methods=["POST"])
+def client_add():
+  post_data = request.json
 
-    #   client_record = Clients(first_name, last_name, email, phone, street_address, city, state, postal_code, active)
+  if not post_data:
+    post_data = request.post
+  
+  first_name = post_data.get('first_name')
+  last_name = post_data.get('last_name')
+  phone = post_data.get('phone')
+  email = post_data.get('email')
+  street_address = post_data.get('street_address')
+  city = post_data.get('city')
+  state = post_data.get('state')
+  postal_code = post_data.get('postal_code')
+  active = post_data.get('active')
 
-    #   db.session.add(client_record)
-    #   db.session.commit()
-    # else:
-    #   print("Sarah Roy found!")
+  add_client(first_name, last_name, phone, email, street_address, city, state, postal_code, active)
 
-    
-    # print("Querying for Sarah's Pet...")
-    # pet_data = db.session.query(PetInformation).filter(PetInformation.name == 'Artemis').first()
-    # if pet_data == None:
-    #   print("Sarah's Pet' not found! Creating Sarah's Pet's account...")
-    #   name = 'Artemis'
-    #   age = '1'
-    #   pet_type = 'Cat'
-    #   acitve = True
-    #   owner_id = Clients.client_id where 
+  return jsonify("Client created"), 201
 
-    #   client_record = Clients(first_name, last_name, email, phone, street_address, city, state, postal_code, active)
+def add_client(first_name, last_name, phone, email, street_address, city, state, postal_code, active): 
+  new_client = Clients(first_name, last_name, phone, email, street_address, city, state, postal_code, active)
+  
+  db.session.add(new_client)
+  db.session.commit()
 
-    #   db.session.add(client_record)
-    #   db.session.commit()
-    # else:
-    #   print("Sarah Roy found!")
+
+@app.route("/pet/add", methods=["POST"])
+def pet_add():
+  post_data = request.json
+
+  if not post_data:
+    post_data = request.post
+  
+  name = post_data.get('name')
+  age = post_data.get('age')
+  pet_type = post_data.get('pet_type')
+  active = post_data.get('active')
+  owner_id = post_data.get('owner_id')
+  
+
+  add_pet(name, age, pet_type, active, owner_id)
+
+  return jsonify("Pet created"), 201
+
+def add_pet(name, age, pet_type, active, owner_id): 
+  new_pet = PetInformation(name, age, pet_type, active, owner_id)
+  
+  db.session.add(new_pet)
+  db.session.commit()
 
 
 
@@ -74,4 +92,4 @@ def create_all():
 
 if __name__ == '__main__':
   create_all()
-  app.run(host='0.0.0.0', port="4000")
+  app.run(host='0.0.0.0', port="8089")
