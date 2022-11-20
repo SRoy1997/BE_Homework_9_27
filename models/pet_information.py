@@ -37,8 +37,9 @@ class PetInformation(db.Model):
 
 class PetInformationSchema(ma.Schema):
   class Meta:
-    fields = ['name', 'age,', 'pet_type', 'active', 'owner', 'opperations', 'opperation_dates']
-  owner = ma.fields.Nested(ClientsSchema(only=("client_id", "first_name", "last_name")))
+    fields = ['pet_id', 'owner_id', 'name', 'age,', 'pet_type', 'active']
+    #  'owner', 'opperations', 'opperation_dates']
+  # owner = ma.fields.Nested(ClientsSchema(only=("client_id", "first_name", "last_name")))
   # opperations = ma.fields.Nested(OpperationInfoSchema(only=("opperation_id", "name", "description"), many=True))
   # opperation_dates = ma.fields.Nested(OpperationsSchema(only=("opperation_id", "date"), many=True))
   # vaccines = ma.fields.Nested(VaccineInfoSchema(only=("vaccine_id", "name", "description"), many=True))
