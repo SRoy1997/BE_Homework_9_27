@@ -20,6 +20,7 @@ class Clients(db.Model):
   state = db.Column(db.String(), nullable=False)
   postal_code = db.Column(db.String(), nullable=False)
   active = db.Column(db.Boolean(), default=False, nullable=False)
+  pet_info = db.relationship('PetInformation', back_populates='owner_info')
 
   def __init__(self, first_name, last_name, phone, email, street_address, city, state, postal_code, active):
     self.first_name = first_name
@@ -34,8 +35,9 @@ class Clients(db.Model):
 
 
 class ClientsSchema(ma.Schema):
+  pet_info = ma.fields.Nested('PetInformationSchema', many=True, only=['pet_id', 'name'])
   class Meta:
-    fields = ['client_id', 'first_name', 'last_name', 'phone', 'email', 'street_address', 'city', 'state', 'postal_code', 'active']
+    fields = ['client_id', 'first_name', 'last_name', 'phone', 'email', 'street_address', 'city', 'state', 'postal_code', 'active', 'pet_info']
 
 
 client_schema = ClientsSchema()

@@ -6,6 +6,8 @@ import uuid
 from flask_marshmallow import Marshmallow
 import marshmallow as ma
 from models.clients import ClientsSchema
+from models.opperation_association import opperation_association_table
+from models.vaccine_association import vaccine_association_table
 # from models.opperation_association import OpperationsSchema
 # from models.opperation_info import OpperationInfoSchema
 # from models.vaccine_association import VaccinesSchema
@@ -20,12 +22,10 @@ class PetInformation(db.Model):
   pet_type = db.Column(db.String(), nullable=False)
   active = db.Column(db.Boolean(), default=False, nullable=False)
   owner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Clients.client_id'), nullable=True)
-  # owner = db.relationship('Clients', backref=db.backref('Clients', lazy=True))
-  # opperations = db.relationship('OpperationInfo', secondary='Opperations', back_populates = 'opperation_id')
-  # opperation_dates = db.relationship('Opperations', back_populates = 'opperation_info')
-  # vaccines = db.relationship('VaccineInfo', secondary='Vaccines', back_populates = 'vaccine_id')
-  # vaccine_dates = db.relationship('Vaccines', back_populates = 'vaccine_info')
-
+  
+  owner_info = db.relationship('Clients', back_populates='pet_info')
+  opperations = db.relationship('OpperationInfo', secondary=opperation_association_table, back_populates='pet_info')
+  vaccines = db.relationship('VaccineInfo', secondary=vaccine_association_table, back_populates='pet_info')
 
   def __init__(self, name, age, pet_type, active, owner_id):
     self.name = name
@@ -36,14 +36,12 @@ class PetInformation(db.Model):
 
 
 class PetInformationSchema(ma.Schema):
+  owner_info = ma.fields.Nested('ClientsSchema', only=['client_id', 'first_name', 'last_name'])
+  opperations = ma.fields.Nested('OpperationInfoSchema', many=True, only=['opperation_id', 'name', 'description'])
+  vaccines = ma.fields.Nested('VaccineInfoSchema', many=True, only=['vaccine_id', 'name', 'description'])
   class Meta:
-    fields = ['pet_id', 'owner_id', 'name', 'age,', 'pet_type', 'active']
-    #  'owner', 'opperations', 'opperation_dates']
-  # owner = ma.fields.Nested(ClientsSchema(only=("client_id", "first_name", "last_name")))
-  # opperations = ma.fields.Nested(OpperationInfoSchema(only=("opperation_id", "name", "description"), many=True))
-  # opperation_dates = ma.fields.Nested(OpperationsSchema(only=("opperation_id", "date"), many=True))
-  # vaccines = ma.fields.Nested(VaccineInfoSchema(only=("vaccine_id", "name", "description"), many=True))
-  # vaccine_dates = ma.fields.Nested(VaccinesSchema(only=("vaccine_id", "date"), many=True))
+    fields = ['pet_id', 'name', 'age,', 'pet_type', 'active', 'opperations', 'vaccines', 'owner_info']
+
 
 pet_information_schema = PetInformationSchema()
 pets_information_schema = PetInformationSchema(many=True)
