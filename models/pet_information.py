@@ -8,10 +8,6 @@ import marshmallow as ma
 from models.clients import ClientsSchema
 from models.opperation_association import opperation_association_table
 from models.vaccine_association import vaccine_association_table
-# from models.opperation_association import OpperationsSchema
-# from models.opperation_info import OpperationInfoSchema
-# from models.vaccine_association import VaccinesSchema
-# from models.vaccine_info import VaccineInfoSchema
 
 
 class PetInformation(db.Model):
