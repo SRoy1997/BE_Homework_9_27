@@ -25,7 +25,7 @@ class VaccineInfo(db.Model):
 
 
 class VaccineInfoSchema(ma.Schema):
-  pet_info = ma.fields.Nested('PetInformationSchema', many=True, only=['pet_id', 'name', 'pet_type', 'owner_id'])
+  pet_info = ma.fields.Nested('PetInformationSchema', many=True, only=['pet_id', 'name', 'pet_type'])
   class Meta:
     fields = ['vaccine_id', 'name', 'description', 'active', 'pet_info']
 

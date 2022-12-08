@@ -1,9 +1,11 @@
 from flask import Flask, request, Response, jsonify
 from flask_marshmallow import Marshmallow
+from sqlalchemy.dialects.postgresql import UUID
+
 
 from db import *
 from models.clients import Clients, clients_schema
-from models.pet_information import PetInformation, pets_information_schema, pet_information_schema
+from models.pet_information import PetInformation, pets_information_schema
 from models.pet_type import PetType, pet_type_schema
 from models.opperation_info import OpperationInfo, opperations_info_schema
 from models.vaccine_info import VaccineInfo, vaccines_info_schema
@@ -119,6 +121,26 @@ def client_update():
   else:
     return jsonify("ERROR: request must be in JSON format"), 400
 
+@app.route('/client/activate/<client_id>', methods=['GET'] )
+def client_activate(client_id):
+  results = db.session.query(Clients).filter(Clients.client_id == client_id).first()
+  results.active=True
+  db.session.commit()
+  return jsonify('Client Activated'), 200
+
+@app.route('/client/deactivate/<client_id>', methods=['GET'] )
+def client_deactivate(client_id):
+  results = db.session.query(Clients).filter(Clients.client_id == client_id).first()
+  results.active=False
+  db.session.commit()
+  return jsonify('Client Deactivated'), 200
+
+@app.route('/client/delete/<client_id>', methods=['DELETE'] )
+def client_delete(client_id):
+  results = db.session.query(Clients).filter(Clients.client_id == client_id).first()
+  db.session.delete(results)
+  db.session.commit()
+  return jsonify('Client Deleted'), 200
 
 @app.route("/pet/add", methods=["POST"])
 def pet_add():
@@ -206,6 +228,27 @@ def pet_update():
       return jsonify("Pet Not Found"), 404
   else:
     return jsonify("ERROR: request must be in JSON format"), 400
+
+@app.route('/pet/activate/<pet_id>', methods=['GET'] )
+def pet_activate(pet_id):
+  results = db.session.query(PetInformation).filter(PetInformation.pet_id == pet_id).first()
+  results.active=True
+  db.session.commit()
+  return jsonify('Pet Activated'), 200
+
+@app.route('/pet/deactivate/<pet_id>', methods=['GET'] )
+def pet_deactivate(pet_id):
+  results = db.session.query(PetInformation).filter(PetInformation.pet_id == pet_id).first()
+  results.active=False
+  db.session.commit()
+  return jsonify('Pet Deactivated'), 200
+
+@app.route('/pet/delete/<pet_id>', methods=['DELETE'] )
+def pet_delete(pet_id):
+  results = db.session.query(PetInformation).filter(PetInformation.pet_id == pet_id).first()
+  db.session.delete(results)
+  db.session.commit()
+  return jsonify('Pet Deleted'), 200
 
 
 @app.route("/pet_type/add", methods=["POST"])
@@ -357,6 +400,27 @@ def opperation_update():
   else:
     return jsonify("ERROR: request must be in JSON format"), 400
 
+@app.route('/opperation/activate/<opperation_id>', methods=['GET'] )
+def opperation_activate(opperation_id):
+  results = db.session.query(OpperationInfo).filter(OpperationInfo.opperation_id == opperation_id).first()
+  results.active=True
+  db.session.commit()
+  return jsonify('Opperation Activated'), 200
+
+@app.route('/opperation/deactivate/<opperation_id>', methods=['GET'] )
+def opperation_deactivate(opperation_id):
+  results = db.session.query(OpperationInfo).filter(OpperationInfo.opperation_id == opperation_id).first()
+  results.active=False
+  db.session.commit()
+  return jsonify('Opperation Deactivated'), 200
+
+@app.route('/opperation/delete/<opperation_id>', methods=['DELETE'] )
+def opperation_delete(opperation_id):
+  results = db.session.query(OpperationInfo).filter(OpperationInfo.opperation_id == opperation_id).first()
+  db.session.delete(results)
+  db.session.commit()
+  return jsonify('Opperation Deleted'), 200
+
 
 
 @app.route("/vaccine/add", methods=["POST"])
@@ -425,6 +489,27 @@ def vaccine_update():
       return jsonify("Vaccine Not Found"), 404
   else:
     return jsonify("ERROR: request must be in JSON format"), 400
+
+@app.route('/vaccine/activate/<vaccine_id>', methods=['GET'] )
+def vaccine_activate(vaccine_id):
+  results = db.session.query(VaccineInfo).filter(VaccineInfo.vaccine_id == vaccine_id).first()
+  results.active=True
+  db.session.commit()
+  return jsonify('Vaccine Activated'), 200
+
+@app.route('/vaccine/deactivate/<vaccine_id>', methods=['GET'] )
+def vaccine_deactivate(vaccine_id):
+  results = db.session.query(VaccineInfo).filter(VaccineInfo.vaccine_id == vaccine_id).first()
+  results.active=False
+  db.session.commit()
+  return jsonify('Vaccine Deactivated'), 200
+
+@app.route('/vaccine/delete/<vaccine_id>', methods=['DELETE'] )
+def vaccine_delete(vaccine_id):
+  results = db.session.query(VaccineInfo).filter(VaccineInfo.vaccine_id == vaccine_id).first()
+  db.session.delete(results)
+  db.session.commit()
+  return jsonify('Vaccine Deleted'), 200
 
 
 

@@ -24,7 +24,7 @@ class OpperationInfo(db.Model):
 
 
 class OpperationInfoSchema(ma.Schema):
-  pet_info = ma.fields.Nested('PetInformationSchema', many=True, only=['pet_id', 'name', 'pet_type', 'owner_id'])
+  pet_info = ma.fields.Nested('PetInformationSchema', many=True, only=['pet_id', 'name', 'pet_type'])
   class Meta:
     fields = ['opperation_id', 'name', 'description', 'active', 'pet_info']
 
